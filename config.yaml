@@ -1,0 +1,28 @@
+# Ollama配置
+ollama:
+  architect:
+    host: "http://localhost:11434"
+    model: "qwen2.5:3b"
+    temperature: 0.7
+
+  developer:
+    host: "http://localhost:11435"
+    model: "qwen2.5:3b"
+    temperature: 0.3  # 代码生成需要更确定性
+
+  qa:
+    host: "http://localhost:11436"
+    model: "qwen2.5:3b"
+    temperature: 0.5
+
+# 工作流配置
+workflow:
+  max_iterations: 3        # 最大重试次数
+  timeout_seconds: 300     # 单个Agent超时时间
+  auto_fix: true          # 自动修复bug
+
+# 项目配置
+project:
+  workspace: "./workspace"
+  output_format: ["zip", "tar.gz"]
+  supported_languages: ["python", "javascript", "go"]
