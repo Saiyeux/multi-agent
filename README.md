@@ -108,3 +108,13 @@ ls -la workspace/tests/
 # 最终交付物（zip 压缩包）
 ls -la workspace/releases/
 ```
+
+### 🧹 清理工作区
+
+完成一个项目后，想开始新项目？一键清理：
+
+```bash
+bash scripts/clean_workspace.sh
+```
+
+这会删除所有生成的文件，但保留目录结构，让你可以开始新的开发任务。

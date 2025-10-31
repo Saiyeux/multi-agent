@@ -41,7 +41,10 @@ curl http://localhost:11434/api/tags
 curl http://localhost:11435/api/tags
 curl http://localhost:11436/api/tags
 
-# 清理工作区
+# 一键清理工作区（推荐）
+bash scripts/clean_workspace.sh
+
+# 或手动清理
 rm -rf workspace/code/* workspace/tests/* workspace/releases/*
 ```
 
