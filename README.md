@@ -118,3 +118,29 @@ bash scripts/clean_workspace.sh
 ```
 
 这会删除所有生成的文件，但保留目录结构，让你可以开始新的开发任务。
+
+### 📊 查看迭代日志
+
+系统会自动记录每次迭代的详细信息（测试结果、错误分析、修复的文件等）：
+
+```bash
+# 查看所有迭代摘要
+python scripts/view_iteration_log.py
+
+# 查看最新一次迭代的详细信息
+python scripts/view_iteration_log.py --latest
+
+# 查看第 3 次迭代的详细信息
+python scripts/view_iteration_log.py --iteration 3 --full
+
+# 日志文件位置
+cat workspace/reports/iteration_log.jsonl
+```
+
+**迭代日志包含**：
+- ⏰ 时间戳
+- ✅❌ 测试结果（通过/失败）
+- 📊 测试统计（总数/失败数）
+- 🔍 错误分析（错误类型、根本原因、修复建议）
+- 🔧 修复的文件列表
+- 📝 完整的测试输出

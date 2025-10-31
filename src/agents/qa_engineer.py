@@ -61,10 +61,14 @@ class QAAgent(BaseAgent):
     async def _run_tests(self, code_dir: Path, test_dir: Path) -> Dict[str, Any]:
         """运行测试"""
         try:
-            # 使用pytest运行测试，捕获详细输出
+            # 计算相对于 workspace 的相对路径
+            workspace = code_dir.parent
+            test_dir_rel = test_dir.relative_to(workspace)
+
+            # 使用pytest运行测试，使用相对路径避免路径拼接问题
             result = subprocess.run(
-                ['pytest', str(test_dir), '-v', '--tb=short'],
-                cwd=code_dir.parent,
+                ['pytest', str(test_dir_rel), '-v', '--tb=short'],
+                cwd=workspace,
                 capture_output=True,
                 text=True,
                 timeout=60

@@ -1,6 +1,7 @@
 """Developer Agent - Code implementation and testing (Refactored)"""
 
 import re
+from pathlib import Path
 from typing import Dict, Any, Optional, Callable
 from .base_agent import BaseAgent
 from ..llm.prompts import DEVELOPER_SYSTEM_PROMPT
@@ -102,12 +103,31 @@ class DeveloperAgent(BaseAgent):
 3. 测试函数命名清晰（test_xxx）
 4. 包含必要的fixture和mock
 5. 不要在测试代码中使用非ASCII字符的bytes字面量（如 b"中文"）
+6. **重要**：测试文件需要导入被测试的模块，使用以下导入方式：
+   - 在测试文件开头添加路径设置：
+     ```python
+     import sys
+     from pathlib import Path
+     sys.path.insert(0, str(Path(__file__).parent.parent / 'code'))
+     ```
+   - 然后直接导入需要测试的模块（**不要**添加 `main.` 或其他包前缀）
+   - 例如：如果要测试 `calculate.py` 中的 `add` 函数，使用：
+     ```python
+     from calculate import add
+     ```
+     而**不是** `from main.calculate import add`
+7. 文件名必须以 test_ 开头，例如：test_calculator.py
+8. **不要**在文件名前加目录前缀（如 tests/），只写文件名
 
 请按以下格式输出：
 
 === FILE: test_xxx.py ===
 ```python
-# 测试代码
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent / 'code'))
+
+# 你的测试代码
 ```
 """
         response = await self.chat(prompt)
@@ -131,6 +151,19 @@ class DeveloperAgent(BaseAgent):
 
 {error_desc}
 
+重要提示：
+1. 如果需要修复测试文件，必须在测试文件开头添加路径设置：
+```python
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent / 'code'))
+```
+
+2. 导入模块时，直接使用模块名（**不要**添加 `main.` 或其他包前缀）
+   例如：`from calculate import add` 而**不是** `from main.calculate import add`
+
+3. 不要在文件名前加目录前缀（如 tests/），只写文件名
+
 请提供修复后的完整代码文件。
 
 输出格式：
@@ -150,7 +183,10 @@ class DeveloperAgent(BaseAgent):
         matches = re.findall(pattern, response, re.DOTALL)
 
         for filename, code in matches:
-            files[filename.strip()] = code.strip()
+            # 清理文件名：移除目录前缀，只保留文件名
+            # 例如：tests/test_add.py -> test_add.py
+            clean_filename = Path(filename.strip()).name
+            files[clean_filename] = code.strip()
 
         # 如果没有匹配到文件分隔符，尝试提取单个代码块
         if not files:
